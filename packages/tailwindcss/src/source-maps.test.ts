@@ -70,8 +70,7 @@ test('@apply generates source maps', async () => {
   expect(sources.length).toBe(1)
 
   expect(annotations).toEqual([
-    //
-    '1:0 <- 1:0',
+    '1:0 <- 6:0',
     '2:2 <- 2:2',
     '3:2 <- 3:2',
     '4:2 <- 3:2',
