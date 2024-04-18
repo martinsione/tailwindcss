@@ -50,18 +50,20 @@ export function parse(input: string, track?: TrackLocations) {
   let sourceEndColumn = 0
 
   function sourceRange() {
-    if (!track) return null
+    if (!track) return []
 
-    return {
-      start: {
-        line: sourceStartLine,
-        column: sourceStartColumn,
+    return [
+      {
+        start: {
+          line: sourceStartLine,
+          column: sourceStartColumn,
+        },
+        end: {
+          line: sourceEndLine,
+          column: sourceEndColumn,
+        },
       },
-      end: {
-        line: sourceEndLine,
-        column: sourceEndColumn,
-      },
-    }
+    ]
   }
 
   for (let i = 0; i < input.length; i++) {
@@ -539,7 +541,7 @@ export function parse(input: string, track?: TrackLocations) {
                 .trim(),
               important: importantIdx !== -1,
               source: sourceRange()!,
-              destination: null,
+              destination: [],
             } satisfies Declaration
             parent.nodes.push(node)
           }
@@ -556,7 +558,7 @@ export function parse(input: string, track?: TrackLocations) {
         ast.push(parent)
 
         // TODO: We want to track the closing `}` as part of the parent node.
-        // parent.source = sourceRange()!
+        // parent.source.push(...sourceRange()!)
       }
 
       // Go up one level in the stack.
@@ -609,7 +611,7 @@ function parseDeclaration(buffer: string, colonIdx: number = buffer.indexOf(':')
     property: buffer.slice(0, colonIdx).trim(),
     value: buffer.slice(colonIdx + 1, importantIdx === -1 ? buffer.length : importantIdx).trim(),
     important: importantIdx !== -1,
-    source: null,
-    destination: null,
+    source: [],
+    destination: [],
   }
 }
