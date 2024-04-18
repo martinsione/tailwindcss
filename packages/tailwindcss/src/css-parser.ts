@@ -148,7 +148,7 @@ export function parse(input: string, track?: TrackLocations) {
       if (commentString.charCodeAt(2) === EXCLAMATION_MARK) {
         let node = comment(commentString.slice(2, -2))
         licenseComments.push(node)
-        track?.src(node, sourceRange()!)
+        node.source = sourceRange()!
       }
     }
 
@@ -362,7 +362,7 @@ export function parse(input: string, track?: TrackLocations) {
       } else {
         ast.push(declaration)
       }
-      track?.src(declaration, sourceRange()!)
+      declaration.source = sourceRange()!
 
       buffer = ''
       sourceStartLine = line
@@ -393,7 +393,7 @@ export function parse(input: string, track?: TrackLocations) {
       }
 
       // Track the source location for source maps
-      track?.src(node, sourceRange()!)
+      node.source = sourceRange()!
 
       // Reset the state for the next node.
       buffer = ''
@@ -424,7 +424,7 @@ export function parse(input: string, track?: TrackLocations) {
       }
 
       // Track the source location for source maps
-      track?.src(declaration, sourceRange()!)
+      declaration.source = sourceRange()!
 
       buffer = ''
       sourceStartLine = line
@@ -454,7 +454,7 @@ export function parse(input: string, track?: TrackLocations) {
       parent = node
 
       // Track the source location for source maps
-      track?.src(node, sourceRange()!)
+      node.source = sourceRange()!
 
       // Reset the state for the next node.
       buffer = ''
@@ -501,7 +501,7 @@ export function parse(input: string, track?: TrackLocations) {
           }
 
           // Track the source location for source maps
-          track?.src(node, sourceRange()!)
+          node.source = sourceRange()!
 
           // Reset the state for the next node.
           buffer = ''
@@ -538,9 +538,10 @@ export function parse(input: string, track?: TrackLocations) {
                 .slice(colonIdx + 1, importantIdx === -1 ? buffer.length : importantIdx)
                 .trim(),
               important: importantIdx !== -1,
+              source: sourceRange()!,
+              destination: null,
             } satisfies Declaration
             parent.nodes.push(node)
-            track?.src(node, sourceRange()!)
           }
         }
       }
@@ -555,7 +556,7 @@ export function parse(input: string, track?: TrackLocations) {
         ast.push(parent)
 
         // We want to track the closing `}` as part of the parent node.
-        track?.src(parent, sourceRange()!)
+        parent.source = sourceRange()!
       }
 
       // Go up one level in the stack.
@@ -608,5 +609,7 @@ function parseDeclaration(buffer: string, colonIdx: number = buffer.indexOf(':')
     property: buffer.slice(0, colonIdx).trim(),
     value: buffer.slice(colonIdx + 1, importantIdx === -1 ? buffer.length : importantIdx).trim(),
     important: importantIdx !== -1,
+    source: null,
+    destination: null,
   }
 }
