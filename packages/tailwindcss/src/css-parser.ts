@@ -555,8 +555,8 @@ export function parse(input: string, track?: TrackLocations) {
       if (grandParent === null && parent) {
         ast.push(parent)
 
-        // We want to track the closing `}` as part of the parent node.
-        parent.source = sourceRange()!
+        // TODO: We want to track the closing `}` as part of the parent node.
+        // parent.source = sourceRange()!
       }
 
       // Go up one level in the stack.
